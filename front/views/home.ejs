@@ -10,6 +10,7 @@
 
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.css"/>
 
 </head>
 <style>
@@ -30,18 +31,50 @@
   }
 
   table{
-    margin-bottom:0% !important
+    margin-bottom:0% !important;
+    margin-top:0% !important
   }
 
   .table-responsive {
     background-color: rgba(255, 255, 255, 0.9);
     
   }
+  table.dataTable {
+    margin-top:0px !important
+  }
 
   .table-heigth {
     background-color: rgba(255, 255, 255, 0.6);
-    height: 58vh;
+    min-height: 58vh;
+    max-height: 58vh;
   }
+
+  .ABMclientes {
+    background-color: rgba(255, 255, 255, 0.6);
+    min-height: 58vh;
+    max-height: 58vh;
+  }
+  
+  thead {
+    background-color: rgba(219, 219, 219, 0.728);
+    text-align: center;
+  }
+
+  .titulo {
+    background-color: rgba(219, 219, 219, 0.728);
+    text-align: center;
+    padding: 15px;
+  }
+
+  table.dataTable thead th, table.dataTable thead td, table.dataTable tbody th, table.dataTable tbody td {
+    text-align: center;
+  }
+
+  #tabla_clientes_wrapper > div:nth-child(1) {
+    margin-top: 10px;
+    margin-right: 20px;
+  }
+
 </style>
 
 <body background="images/fondo_login.jpg">
@@ -67,50 +100,176 @@
             <div class="d-flex flex-column">
               <div class="row align-items-center altura2">
                 <div class="container-fluid">
-                  <div class="alert alert-primary" role="alert">
-                    HOLA COMO ESTAS PABLITUUUUU !!!!!!!
+                  <div class="row">
+                    <div class="col-4">
+                      <a id="alta_de_usuarios" href="#">
+                        <div class="alert alert-primary text-center" role="alert">
+                          Alta de Usuarios
+                        </div>
+                      </a>
+                    </div>
+                    <div class="col-4">
+                      <a id="reporte_de_usuarios" href="#">
+                        <div class="alert alert-primary text-center" role="alert">
+                          Reporte de Usuarios
+                        </div>
+                      </a>
+                    </div>
+                    <div class="col-4">
+                      <a id="reporte_de_visitas" href="#">
+                        <div class="alert alert-primary text-center" role="alert">
+                          Reporte de Visitas
+                        </div>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
+              
               <div class="row align-items-center justify-content-md-center">
-                <div class="col-12 col-md-11">
-                  <div class="table-responsive">
-                    <table class="table">
-                      <thead>
-                        <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">First</th>
-                          <th scope="col">Last</th>
-                          <th scope="col">Handle</th>
-                        </tr>
-                      </thead>
-                    </table>
+                <div id="ABMclientes" class="col-12 col-md-11 ABMclientes">
+                  <div class="container">
+                    <div class="container-fluid">
+                      <div class="container" style="margin-bottom: 3%;">
+                        <div class="container mt-5 titulo">
+                          <h3 id="disabled-elements">
+                            <span class="bd-content-title">Alta de Usuario</span>
+                          </h3>
+                        </div>
+                      </div>
+                      <div class="container" style="width: 95%;">
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Nombre</span>
+                          </div>
+                          <input type="text" class="form-control" placeholder="Debe tener minimo 3 y maximo 32 caracteres alfabeticos." id="nombre">
+                        </div>
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Apellido</span>
+                          </div>
+                          <input type="text" class="form-control" placeholder="Debe tener minimo 3 y maximo 32 caracteres alfabeticos." id="apellido">
+                        </div>
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Fecha nac.</span>
+                          </div>
+                          <input type="date" class="form-control" id="fecha_nacimiento">
+                        </div>
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Contraseña</span>
+                          </div>
+                          <input type="password" class="form-control" placeholder="Debe tener minimo 8 caracteres, al menos una mayúscula, una minúscula y un número." id="password">
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="table-responsive table-heigth">
-                    <table class="table">
-                      <tbody>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>Mark</td>
-                          <td>Otto</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">1</th>
-                          <td>Mark</td>
-                          <td>Otto</td>
-                          <td>@mdo</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                  <div class="nav justify-content-end mr-5">
+                    <div class="btn-group mr-4" role="group" aria-label="Basic example">
+                      <button type="button" id="limpiar" class="btn btn-secondary ">Limpiar campos</button>
+                    </div>
+                    <div class="btn-group mr-4" role="group" aria-label="Basic example">
+                      <button type="button" id="guardar" class="btn btn-primary ">Guardar</button>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="row align-items-center altura2">
-                <div class="container-fluid">
-                  <div class="alert alert-primary" role="alert">
-                    CHAU PABLITUUUUU !!!!!!!
+
+              <div class="row align-items-center justify-content-md-center">
+                <div id="editarClientes" class="col-12 col-md-11 ABMclientes">
+                  <div class="container">
+                    <div class="container-fluid">
+                      <div class="container" style="margin-bottom: 3%;">
+                        <div class="container mt-5 titulo">
+                          <h3 id="disabled-elements">
+                            <span class="bd-content-title">Editar de Usuario</span>
+                          </h3>
+                        </div>
+                      </div>
+                      <div class="container" style="width: 95%;">
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Nombre</span>
+                          </div>
+                          <input type="text" class="form-control" placeholder="Debe tener minimo 3 y maximo 32 caracteres alfabeticos." id="edit_nombre">
+                        </div>
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Apellido</span>
+                          </div>
+                          <input type="text" class="form-control" placeholder="Debe tener minimo 3 y maximo 32 caracteres alfabeticos." id="edit_apellido">
+                        </div>
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Fecha nac.</span>
+                          </div>
+                          <input type="date" class="form-control" id="edit_fecha_nacimiento">
+                        </div>
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Contraseña</span>
+                          </div>
+                          <input type="password" class="form-control" placeholder="Debe tener minimo 8 caracteres, al menos una mayúscula, una minúscula y un número." id="edit_password">
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                  <div class="nav justify-content-end mr-5">
+                    <div class="btn-group mr-4" role="group" aria-label="Basic example">
+                      <button type="button" id="actualizar" class="btn btn-primary ">Actualizar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="clientes" class="col-12 col-md-12">
+                <div class="container">
+                  <div class="container-fluid">
+                    <div class="table-responsive table-heigth">
+                      <table id="tabla_clientes" class="table">
+                        <thead class="text-center">
+                          <tr>
+                            <th scope="col">nombre</th>
+                            <th scope="col">apellido</th>
+                            <th scope="col">fecha_nacimiento</th>
+                            <th scope="col">password</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="visitas" class="col-12 col-md-12">
+                <div class="container">
+                  <div class="container-fluid">
+                    <div class="table-responsive table-heigth">
+                      <table id="tabla_clientes" class="table">
+                        <thead class="text-center">
+                          <tr>
+                            <th scope="col">nombre</th>
+                            <th scope="col">apellido</th>
+                            <th scope="col">fecha_nacimiento</th>
+                            <th scope="col">password</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row align-items-center altura2">
+              <div class="container-fluid">
+                <div class="alert alert-primary" role="alert">
+                  CHAU PABLITUUUUU !!!!!!!
                 </div>
               </div>
             </div>
@@ -120,12 +279,13 @@
     </div>
   </div>
 </body>
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
-  
-  <script type="text/javascript" src="funcionesGenerales.js"></script>
-  <script type="text/javascript" src="home.js"></script>
-  
-  </html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.js"></script>
+
+<script type="text/javascript" src="funcionesGenerales.js"></script>
+<script type="text/javascript" src="home.js"></script>
+
+</html>

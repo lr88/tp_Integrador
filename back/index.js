@@ -16,8 +16,13 @@ app.use((req,res,next)=>{
 })
 
 // RECIBIR LOS DATOS DEL FRONT  -- OK
-app.post('/guardarDatos', async function (req, res) {
-    controlador.guardarDatos(req, res)
+app.post('/guardarDatosUsuario', async function (req, res) {
+    controlador.guardarDatosUsuario(req, res)
+})
+
+// RECIBIR LOS DATOS DEL FRONT  -- OK
+app.post('/actualizarDatosUsuario', async function (req, res) {
+    controlador.actualizarDatosUsuario(req, res)
 })
 
 // RECIBIR LOS DATOS DEL FRONT  -- OK
@@ -25,11 +30,14 @@ app.post('/getDatos', async function (req, res) {
     controlador.getDatos(req, res)
 })
 
+
+
 app.listen(PORT, function () {
     console.log('Server corriendo en el puerto:', PORT)
 })
 
 //  
 //  GRUPO 4
-//      ABM             ABM Registrados					
-//      reporteria      Listado documentos vistos por un usuario Registrado					
+//      ABM Usuarios Registrados
+//      Reporte de un para traer listados de usuarios registrados y, los 3 documentos más vistos indicando la cantidad de veces que se vio cada uno
+			
