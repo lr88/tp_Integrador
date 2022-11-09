@@ -26,11 +26,14 @@ app.post('/actualizarDatosUsuario', async function (req, res) {
 })
 
 // RECIBIR LOS DATOS DEL FRONT  -- OK
-app.post('/getDatos', async function (req, res) {
-    controlador.getDatos(req, res)
+app.post('/getDatosUsuarios', async function (req, res) {
+    controlador.getDatosUsuarios(req, res)
 })
 
-
+// RECIBIR LOS DATOS DEL FRONT  -- OK
+app.post('/getDatosEstadisticos', async function (req, res) {
+    controlador.getDatosEstadisticos(req, res)
+})
 
 app.listen(PORT, function () {
     console.log('Server corriendo en el puerto:', PORT)

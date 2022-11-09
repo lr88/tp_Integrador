@@ -6,20 +6,11 @@ var guardarDatosUsuario = async function (req, res) {
     try {
         let datos = req.body
 
-        console.log("req.body")
-        console.log(req.body)
-        
-        let datosObligatoriosUsuario = ['tipo']
+        let datosObligatoriosUsuario = ['nombre','apellido','fecha_nacimiento','password']
         funcionesGenerales.validaDatos(datos,datosObligatoriosUsuario)
         let respuestaGuardarUsuario = await conexionBDD.ejecutarConsulta(querys.guardarUsuario(datos))
 
-        datos.idusuario = respuestaGuardarUsuario.insertId
-
-        let datosObligatoriosRegistrado = ['nombre','apellido','fecha_nacimiento','password','idusuario']
-        funcionesGenerales.validaDatos(datos,datosObligatoriosRegistrado)
-        await conexionBDD.ejecutarConsulta(querys.guardarUsuarioRegistrado(datos))
-
-        funcionesGenerales.responderAlFront(res,200,{})
+        funcionesGenerales.responderAlFront(res,200,respuestaGuardarUsuario)
         
     } catch (error) {
         console.log(error.message)
@@ -31,9 +22,9 @@ var actualizarDatosUsuario = async function (req, res) {
     try {
         let datos = req.body
 
-        let datosObligatoriosRegistrado = ['nombre','apellido','fecha_nacimiento','password','idusuario_registrado']
-        funcionesGenerales.validaDatos(datos,datosObligatoriosRegistrado)
-        await conexionBDD.ejecutarConsulta(querys.actualizarUsuarioRegistrado(datos))
+        let datosObligatoriosUsuario = ['nombre','apellido','fecha_nacimiento','password','id_usuario']
+        funcionesGenerales.validaDatos(datos,datosObligatoriosUsuario)
+        await conexionBDD.ejecutarConsulta(querys.actualizarUsuario(datos))
 
         funcionesGenerales.responderAlFront(res,200,{})
         
@@ -43,9 +34,19 @@ var actualizarDatosUsuario = async function (req, res) {
     }
 }
 
-var getDatos = async function (req, res) {
+var getDatosUsuarios = async function (req, res) {
     try {
-        let respuestaGetDatos = await conexionBDD.ejecutarConsulta(querys.getDatos())
+        let respuestaGetDatos = await conexionBDD.ejecutarConsulta(querys.getDatosUsuarios())
+        funcionesGenerales.responderAlFront(res,200,respuestaGetDatos)
+    } catch (error) {
+        console.log(error.message)
+        funcionesGenerales.responderAlFront(res,500,error.message)
+    }
+}
+
+var getDatosEstadisticos = async function (req, res) {
+    try {
+        let respuestaGetDatos = await conexionBDD.ejecutarConsulta(querys.getDatosEstadisticos())
         funcionesGenerales.responderAlFront(res,200,respuestaGetDatos)
     } catch (error) {
         console.log(error.message)
@@ -55,8 +56,9 @@ var getDatos = async function (req, res) {
 
 module.exports = {
     guardarDatosUsuario,
-    getDatos,
-    actualizarDatosUsuario
+    getDatosUsuarios,
+    actualizarDatosUsuario,
+    getDatosEstadisticos
 }
 
 /*

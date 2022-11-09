@@ -4,7 +4,7 @@ var sqlConfig = {
     host     : 'localhost',
     user     : 'root',
     password : 'root',
-    database : 'mydb'
+    database : 'tp'
 }
 mysql.configure(sqlConfig);
 

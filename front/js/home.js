@@ -11,17 +11,18 @@ $(document).ready(async function () {
 
     $('#reporte_de_usuarios').on('click',function () {
         limpiarCampos()
-        loadTable()
+        loadTableUsuarios()
         mostrarPanel('clientes')
     })
     
-    $('#reporte_de_visitas').on('click',function () {
+    $('#reporte_de_estadisticos').on('click',function () {
         limpiarCampos()
-        mostrarPanel('visitas')
+        loadTableEstadisticos()
+        mostrarPanel('estadisticos')
     })
 
     function mostrarPanel(panel) {
-        let paneles = ['editarClientes','ABMclientes','clientes','visitas']
+        let paneles = ['editarClientes','ABMclientes','clientes','estadisticos']
         paneles.forEach(element => {
             $('#'+element).hide()
         });
@@ -46,8 +47,8 @@ $(document).ready(async function () {
         return unaFecha
     }
 
-    async function loadTable() {
-        res2 = await ejecutarAjax('post',{}, URL_HOST + '/getDatos')
+    async function loadTableUsuarios() {
+        res2 = await ejecutarAjax('post',{}, URL_HOST + '/getDatosUsuarios')
         
         if ( $.fn.DataTable.isDataTable('#tabla_clientes') ) {
             $('#tabla_clientes').DataTable().destroy();
@@ -87,6 +88,36 @@ $(document).ready(async function () {
                 mostrarPanel('editarClientes')
             }
         } );
+    }
+
+    async function loadTableEstadisticos() {
+        res2 = await ejecutarAjax('post',{}, URL_HOST + '/getDatosEstadisticos')
+        
+        if ( $.fn.DataTable.isDataTable('#tabla_estadisticos') ) {
+            $('#tabla_estadisticos').DataTable().destroy();
+        }
+
+        res2.data.forEach(element => {
+            element.fecha = parsearFecha(element.fecha)
+        });
+        
+        let columnas = [
+            { data : 'titulo' },
+            { data : 'extension' },
+            { data : 'fecha' },
+            { data : 'cantidad_de_descargas' },
+        ]
+
+        $('#tabla_estadisticos').DataTable({
+            data: res2.data,
+            columns:columnas,
+            searching: false,
+            paging: false,
+            ordering: false,
+            lengthChange: false,
+            info: false
+        });
+    
     }
 })
 
@@ -136,7 +167,6 @@ async function guardarUsuario() {
         validarPass($('#password').val(),"Contraseña")
     
         let data = {
-            tipo : 'registrado',
             nombre : $('#nombre').val(),
             apellido: $('#apellido').val(),
             fecha_nacimiento : $('#fecha_nacimiento').val(),
@@ -167,7 +197,7 @@ async function actializarUsuario(unUsuario) {
         unUsuario.fecha_nacimiento = $('#edit_fecha_nacimiento').val()
         unUsuario.password = $('#edit_password').val()
 
-        if(unUsuario.idusuario_registrado){
+        if(unUsuario.id_usuario){
             res = await ejecutarAjax('post',unUsuario, URL_HOST + '/actualizarDatosUsuario')
         }
         
