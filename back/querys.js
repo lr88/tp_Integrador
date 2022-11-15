@@ -27,6 +27,24 @@ function guardarUsuario(datos) {
     }
 }
 
+function borrarUsuario(id_usuario) {
+    try {
+        let query = ""
+        query+= " UPDATE `usuario`"
+        query+= " SET"
+        query+= " `estado` = 0"
+        query+= " WHERE id_usuario = " + id_usuario + ";"
+
+        console.log("")
+        console.log(query)
+        console.log("")
+
+        return query
+    } catch (error) {
+        
+    }
+}
+
 function actualizarUsuario(datos) {
     try {
         let query = ""
@@ -95,5 +113,6 @@ module.exports = {
     guardarUsuario,
     actualizarUsuario,
     getDatosUsuarios,
-    getDatosEstadisticos
+    getDatosEstadisticos,
+    borrarUsuario
 }

@@ -54,17 +54,31 @@ var getDatosEstadisticos = async function (req, res) {
     }
 }
 
+var borrarUsuario = async function (req, res) {
+    try {
+        let datos = req.body
+        let datosObligatoriosUsuario = ['id_usuario']
+        funcionesGenerales.validaDatos(datos,datosObligatoriosUsuario)
+        let respuestaBorrarUsuario = await conexionBDD.ejecutarConsulta(querys.borrarUsuario(datos.id_usuario))
+        funcionesGenerales.responderAlFront(res,200,respuestaBorrarUsuario)
+    } catch (error) {
+        console.log(error.message)
+        funcionesGenerales.responderAlFront(res,500,error.message)
+    }
+}
+
 module.exports = {
     guardarDatosUsuario,
     getDatosUsuarios,
     actualizarDatosUsuario,
-    getDatosEstadisticos
+    getDatosEstadisticos,
+    borrarUsuario
 }
+
 
 /*
  --------       EJEMPLO DE ESTRUCTURA JSON       --------
-
- var datos = {
+var datos = {
     "nombre" : 'pepe',
     "pellido" : 'lopez',
     "dni" : 356698541,

@@ -35,6 +35,11 @@ app.post('/getDatosEstadisticos', async function (req, res) {
     controlador.getDatosEstadisticos(req, res)
 })
 
+// RECIBIR LOS DATOS DEL FRONT  -- OK
+app.post('/borrarUsuario', async function (req, res) {
+    controlador.borrarUsuario(req, res)
+})
+
 app.listen(PORT, function () {
     console.log('Server corriendo en el puerto:', PORT)
 })

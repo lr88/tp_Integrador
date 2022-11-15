@@ -3,30 +3,34 @@ URL_HOST = 'http://localhost:3000'
 $(document).ready(async function () {
     var unUsuario = {}
     
-    mostrarPanel('ABMclientes')
+    mostrarABMClientes()
 
     $('#alta_de_usuarios').on('click',function () {
-        mostrarPanel('ABMclientes')
+        mostrarABMClientes()
     })
 
     $('#reporte_de_usuarios').on('click',function () {
+        mostrarPanelClientes()
+    })
+
+    $('#reporte_de_estadisticos').on('click',function () {
+        mostrarPanelEstadisticos()
+    })
+
+    function mostrarPanelClientes() {
         limpiarCampos()
         loadTableUsuarios()
         mostrarPanel('clientes')
-    })
-    
-    $('#reporte_de_estadisticos').on('click',function () {
+    }
+
+    function mostrarPanelEstadisticos() {
         limpiarCampos()
         loadTableEstadisticos()
         mostrarPanel('estadisticos')
-    })
+    }
 
-    function mostrarPanel(panel) {
-        let paneles = ['editarClientes','ABMclientes','clientes','estadisticos']
-        paneles.forEach(element => {
-            $('#'+element).hide()
-        });
-        $('#'+panel).show()
+    function mostrarABMClientes() {
+        mostrarPanel('ABMclientes')
     }
 
     $('#limpiar').on('click',function () {
@@ -38,7 +42,11 @@ $(document).ready(async function () {
     })
 
     $('#actualizar').on('click',function () {
-        actializarUsuario(unUsuario)
+        actualizarUsuario(unUsuario)
+    })
+
+    $('#borrar').on('click',function () {
+        borrarUsuario(unUsuario)
     })
 
     function parsearFecha(unaFecha) {
@@ -57,12 +65,17 @@ $(document).ready(async function () {
         res2.data.forEach(element => {
             element.fecha_nacimiento_parser = parsearFecha(element.fecha_nacimiento)
         });
+
+        res2.data.forEach(element => {
+            element.estadoFormato = element.estado == 1 ? 'Activo' : 'Inactivo' 
+        });
         
         let columnas = [
             { data : 'nombre' },
             { data : 'apellido' },
             { data : 'fecha_nacimiento_parser' },
             { data : 'password' },
+            { data : 'estadoFormato' },
         ]
         
         var table = $('#tabla_clientes').DataTable({
@@ -81,11 +94,15 @@ $(document).ready(async function () {
             if(usuario){
                 unUsuario = usuario
                 console.log(usuario);
-                $('#edit_nombre').val(unUsuario.nombre),
-                $('#edit_apellido').val(unUsuario.apellido),
-                $('#edit_fecha_nacimiento').val(unUsuario.fecha_nacimiento.substr(0,10).replaceAll("/","-"))
-                $('#edit_password').val(unUsuario.password)
-                mostrarPanel('editarClientes')
+                if(usuario.estado){
+                    $('#edit_nombre').val(unUsuario.nombre),
+                    $('#edit_apellido').val(unUsuario.apellido),
+                    $('#edit_fecha_nacimiento').val(unUsuario.fecha_nacimiento.substr(0,10).replaceAll("/","-"))
+                    $('#edit_password').val(unUsuario.password)
+                    mostrarPanel('editarClientes')
+                }else{
+                    mostarMensajeInCorrecto("Ese registro no se puede editar esta dado de baja")
+                }
             }
         } );
     }
@@ -121,50 +138,73 @@ $(document).ready(async function () {
     }
 })
 
-function validar(valor,nombre) {
+function mostrarPanel(panel) {
+    let paneles = ['editarClientes','ABMclientes','clientes','estadisticos']
+    paneles.forEach(element => {
+        $('#'+element).hide()
+    });
+    $('#'+panel).show()
+}
+
+function validar(valor,nombre,campo) {
     if (valor == '' || valor == undefined ) {
-        alert(" El campo " + nombre + " debe completarse")
+        mostarMensajeInCorrecto(" El campo " + nombre + " debe completarse")
+        hacerFocus(campo)
         throw new Error (" El campo " + nombre + " debe completarse")
     }
 }
 
-function validarCant(valor,nombre) {
-    let formatValor = /[a-zA-Z][a-zA-Z0-9-_]{3,32}/gi
+function hacerFocus(campo) {
+    setTimeout(() => {
+        document.getElementById(campo).focus()
+    }, 4500);
+}
+
+function validarCant(valor,nombre,campo) {
+    let formatValor = /[a-zA-Z][a-zA-Z0-9-_]{2,32}/gi
     if (!formatValor.test(valor)) {
-        alert(nombre + " Invalido : Debe tener minimo 3 y maximo 32 caracteres alfabeticos.")
+        mostarMensajeInCorrecto(nombre + " Invalido : Debe tener minimo 3 y maximo 32 caracteres alfabeticos.")
+        hacerFocus(campo)
         throw new Error (nombre + " Invalido")
     }
 }
 
-function validarFecha(valor) {
+function validarFecha(valor,campo) {
     let formatFecha = /^(19[0-9]{2}|2[0-9]{3})-(0[1-9]|1[012])-([123]0|[012][1-9]|31)$/
-    if (!formatFecha.test(valor) || valor == '' || valor == undefined ) {
+    if (!formatFecha.test(valor) || valor == '' || valor == undefined || !esfutura(valor)) {
         $('#fecha_nacimiento').val('')
-        alert("Fecha Invalida")
+        mostarMensajeInCorrecto("Fecha Invalida")
+        hacerFocus(campo)
         throw new Error ("Fecha Invalida")
     }
 }
 
-function validarPass(valor) {
+function esfutura(valor) {
+    var date = new Date();
+    return new Date(valor) < date.setDate(date.getDate() - 2);
+}
+
+function validarPass(valor,campo) {
     let formatPass = /^(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$/gm
     if (!formatPass.test(valor)) {
         $('#password').val('')
-        alert("Contraseña Invalida")
+        mostarMensajeInCorrecto("Contraseña Invalida")
+        hacerFocus(campo)
         throw new Error ("Contraseña Invalida")
     }
 }
 
 async function guardarUsuario() {
     try {
-        validar($('#nombre').val(),"Nombre")
-        validarCant($('#nombre').val(),"Nombre")
+        validar($('#nombre').val(),"Nombre",'nombre')
+        validarCant($('#nombre').val(),"Nombre",'nombre')
 
-        validar($('#apellido').val(),"Apellido")
-        validarCant($('#apellido').val(),"Apellido")
+        validar($('#apellido').val(),"Apellido",'apellido')
+        validarCant($('#apellido').val(),"Apellido",'apellido')
 
-        validarFecha($('#fecha_nacimiento').val())
+        validarFecha($('#fecha_nacimiento').val(),'fecha_nacimiento')
         
-        validarPass($('#password').val(),"Contraseña")
+        validarPass($('#password').val(),"Contraseña",'password')
     
         let data = {
             nombre : $('#nombre').val(),
@@ -174,23 +214,23 @@ async function guardarUsuario() {
         }
 
         res = await ejecutarAjax('post',data, URL_HOST + '/guardarDatosUsuario')
-        
+        mostarMensajeCorrecto('Datos guardados correctamente')
     } catch (error) {
         console.log(error.message)
     }
 }
 
-async function actializarUsuario(unUsuario) {
+async function actualizarUsuario(unUsuario) {
     try {
-        validar($('#edit_nombre').val(),"Nombre")
-        validarCant($('#edit_nombre').val(),"Nombre")
+        validar($('#edit_nombre').val(),"Nombre",'nombre')
+        validarCant($('#edit_nombre').val(),"Nombre",'nombre')
 
-        validar($('#edit_apellido').val(),"Apellido")
-        validarCant($('#edit_apellido').val(),"Apellido")
+        validar($('#edit_apellido').val(),"Apellido",'edit_apellido')
+        validarCant($('#edit_apellido').val(),"Apellido",'edit_apellido')
 
-        validarFecha($('#edit_fecha_nacimiento').val())
+        validarFecha($('#edit_fecha_nacimiento').val(),'edit_fecha_nacimiento')
         
-        validarPass($('#edit_password').val(),"Contraseña")
+        validarPass($('#edit_password').val(),"Contraseña",'edit_password')
     
         unUsuario.nombre = $('#edit_nombre').val()
         unUsuario.apellido = $('#edit_apellido').val()
@@ -199,8 +239,24 @@ async function actializarUsuario(unUsuario) {
 
         if(unUsuario.id_usuario){
             res = await ejecutarAjax('post',unUsuario, URL_HOST + '/actualizarDatosUsuario')
+            mostarMensajeCorrecto('Datos actualizados correctamente')
         }
         
+    } catch (error) {
+        console.log(error.message)
+
+    }
+}
+
+async function borrarUsuario(unUsuario) {
+    try {
+        if(unUsuario.id_usuario){
+            res = await ejecutarAjax('post',unUsuario, URL_HOST + '/borrarUsuario')
+            $('#cerrar').click()
+            window.location.href = "/"
+        }else{
+            alert("Ese registro no existe")
+        }
     } catch (error) {
         console.log(error.message)
     }
